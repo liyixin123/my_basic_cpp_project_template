@@ -110,7 +110,7 @@ def build(c, config=False):
 
 
 @task(help={"exec_path": "path of exe. eg: src/app"})
-def run(c, exec_path):
+def run(c, exec_path, **kwargs):
     """Run main exe in build path."""
     build_path = get_build_path()
     if not build_path.exists():
@@ -118,7 +118,7 @@ def run(c, exec_path):
         return
     app_path = build_path / exec_path
     cmd_str = f"./{str(app_path)}"
-    cmd = [cmd_str]
+    cmd = [cmd_str] + [f"{value}" for key, value in kwargs.items()]
     c.run(" ".join(cmd), pty=True)
 
 
@@ -166,5 +166,6 @@ def ls(c):
         "--tree",
         "--ignore-glob vcpkg",
         "--ignore-glob .cache",
+        "--ignore-glob vcpkg_installed",
     ]
     c.run(" ".join(cmd), pty=True)
